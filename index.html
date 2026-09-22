@@ -52,6 +52,14 @@
       background: linear-gradient(180deg, rgba(20, 22, 29, 0.95) 0%, rgba(14, 16, 22, 0.98) 100%);
       border: 1px solid rgba(255, 255, 255, 0.07);
     }
+    /* Markdown Styling in AI Box */
+    .ai-markdown h4 { color: #f59e0b; font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.25rem; font-size: 0.85rem; }
+    .ai-markdown ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+    .ai-markdown li { margin-bottom: 0.2rem; }
+    .ai-markdown strong { color: #fef3c7; }
+    .ai-markdown table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.75rem; }
+    .ai-markdown th, .ai-markdown td { border: 1px solid rgba(255, 255, 255, 0.1); padding: 4px 6px; text-align: left; }
+    .ai-markdown th { background: rgba(255, 255, 255, 0.05); color: #c98a42; }
   </style>
 </head>
 <body class="min-h-screen font-sans antialiased selection:bg-amber-600 selection:text-white flex flex-col items-center justify-start pb-20">
@@ -365,7 +373,7 @@
         </div>
       </section>
 
-      <!-- MAINTENANCE MILESTONE GUIDE SECTION (GEMINI 3.0 POWERED) -->
+      <!-- MAINTENANCE MILESTONE GUIDE & TORQUE SEARCH SECTION (GEMINI 3.0 POWERED) -->
       <section class="space-y-3 pt-1">
         <div class="flex items-center justify-between px-1">
           <div class="flex items-center gap-2">
@@ -373,8 +381,8 @@
               <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
             </div>
             <div>
-              <h3 class="text-sm font-bold text-stone-200 tracking-wide font-mono">原廠定保里程規範指南</h3>
-              <p class="text-[10px] text-amber-400/90 font-mono">Gemini 3.0 • 聯網精準檢索原廠使用手冊</p>
+              <h3 class="text-sm font-bold text-stone-200 tracking-wide font-mono">原廠定保里程與部位扭力規範</h3>
+              <p class="text-[10px] text-amber-400/90 font-mono">Gemini 3.0 • 檢索官方手冊與原廠鎖點扭力</p>
             </div>
           </div>
           <button 
@@ -419,17 +427,103 @@
             </div>
           </div>
 
-          <!-- Milestone Tabs -->
-          <div class="grid grid-cols-4 gap-1.5 p-1 bg-atelier-950 rounded-xl border border-white/5 text-center font-mono text-xs">
-            <button type="button" onclick="switchGuideTab('1000')" id="tab-1000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">1,000k</button>
-            <button type="button" onclick="switchGuideTab('5000')" id="tab-5000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">5,000k</button>
-            <button type="button" onclick="switchGuideTab('10000')" id="tab-10000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">10,000k</button>
-            <button type="button" onclick="switchGuideTab('20000')" id="tab-20000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">20,000k</button>
+          <!-- SUB-MODULE SWITCHER: 里程定保週期規範 VS. 鎖點扭力/深度工藝數據 -->
+          <div class="grid grid-cols-2 gap-1.5 p-1 bg-atelier-950 rounded-xl border border-white/5 text-center font-mono text-xs">
+            <button 
+              type="button" 
+              id="btnSubTabMilestone" 
+              onclick="switchMainAiSubTab('milestone')"
+              class="py-1.5 rounded-lg font-bold transition cursor-pointer bg-amber-600 text-white shadow-md flex items-center justify-center gap-1.5"
+            >
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+              <span>定保里程規範</span>
+            </button>
+            <button 
+              type="button" 
+              id="btnSubTabTorque" 
+              onclick="switchMainAiSubTab('torque')"
+              class="py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white flex items-center justify-center gap-1.5"
+            >
+              <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
+              <span>部位鎖點扭力檢索</span>
+            </button>
           </div>
 
-          <!-- Dynamic Guide Content or Loading Skeleton -->
-          <div id="guideDetailCard" class="space-y-3 text-xs min-h-[140px]">
-            <!-- Dynamic Guide Content rendered via JavaScript -->
+          <!-- SUB-VIEW A: MILESTONES (1,000k, 5,000k, 10,000k, 20,000k) -->
+          <div id="subViewMilestone" class="space-y-3">
+            <div class="grid grid-cols-4 gap-1.5 p-1 bg-atelier-950/70 rounded-xl border border-white/5 text-center font-mono text-xs">
+              <button type="button" onclick="switchGuideTab('1000')" id="tab-1000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">1,000k</button>
+              <button type="button" onclick="switchGuideTab('5000')" id="tab-5000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">5,000k</button>
+              <button type="button" onclick="switchGuideTab('10000')" id="tab-10000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">10,000k</button>
+              <button type="button" onclick="switchGuideTab('20000')" id="tab-20000" class="guide-tab py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white">20,000k</button>
+            </div>
+
+            <!-- Milestone Dynamic Content -->
+            <div id="guideDetailCard" class="space-y-3 text-xs min-h-[140px]">
+              <!-- Dynamic Content rendered via JavaScript -->
+            </div>
+          </div>
+
+          <!-- SUB-VIEW B: TORQUE & DETAILED SPEC AI SEARCH ENGINE -->
+          <div id="subViewTorque" class="hidden space-y-3">
+            <div class="p-3 bg-atelier-950 rounded-xl border border-white/5 space-y-2">
+              <div class="flex items-center justify-between text-[11px] font-mono">
+                <span class="text-stone-300 font-bold flex items-center gap-1.5">
+                  <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>高頻保修鎖點（點擊即查）：</span>
+                </span>
+                <span class="text-[9px] text-stone-500">Gemini 3.0 手冊校對</span>
+              </div>
+              <!-- Quick Preset Chips -->
+              <div class="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                <button type="button" onclick="quickSearchTorque('機油洩油螺絲 / 濾網外蓋')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  洩油螺絲
+                </button>
+                <button type="button" onclick="quickSearchTorque('點火火星塞鎖緊扭力')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  火星塞
+                </button>
+                <button type="button" onclick="quickSearchTorque('前後輪軸心螺母 (Front & Rear Axle Nut)')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  前後輪軸心
+                </button>
+                <button type="button" onclick="quickSearchTorque('前煞車卡鉗固定螺栓 (Caliper Mount Bolts)')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  煞車卡鉗座
+                </button>
+                <button type="button" onclick="quickSearchTorque('傳動普利盤 / 離合器外碗公螺母')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  傳動/齒盤螺栓
+                </button>
+                <button type="button" onclick="quickSearchTorque('汽門間隙標準值 (冷車冷態進氣/排氣)')" class="px-2.5 py-1 rounded-lg bg-atelier-900 border border-white/10 hover:border-amber-400/60 hover:text-amber-300 text-stone-300 transition cursor-pointer active:scale-95">
+                  汽門間隙
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Query Form -->
+            <div class="relative">
+              <input 
+                type="text" 
+                id="torqueSearchInput"
+                placeholder="輸入想搜尋的部位 (例：龍頭三角台、前叉阻尼、搖臂軸心...)"
+                class="w-full bg-atelier-950 border border-stone-800 focus:border-amber-500 rounded-xl py-2.5 pl-3.5 pr-20 text-xs font-mono text-stone-100 placeholder:text-stone-600 outline-none transition"
+              >
+              <button 
+                type="button" 
+                id="btnSubmitTorqueSearch"
+                onclick="handleCustomTorqueSearch()"
+                class="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs font-mono transition flex items-center gap-1 cursor-pointer active:scale-95"
+              >
+                <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                <span>檢索</span>
+              </button>
+            </div>
+
+            <!-- Torque Results Display Container -->
+            <div id="torqueResultBox" class="p-3 bg-atelier-950 rounded-xl border border-white/5 space-y-2 text-xs">
+              <div class="text-stone-400 text-center py-4 space-y-1 font-mono">
+                <i data-lucide="wrench" class="w-6 h-6 text-stone-600 mx-auto"></i>
+                <p>請點擊上方快捷部位標籤或輸入指定部位，</p>
+                <p class="text-[11px] text-stone-500">Gemini 3.0 將為您翻閱原廠維修手冊提取標準扭力值。</p>
+              </div>
+            </div>
           </div>
 
           <!-- Grounding Citations Footer -->
@@ -640,7 +734,7 @@
 
     <!-- MODAL 2: Lightbox Modal -->
     <div id="lightboxModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 select-none">
-      <!-- Top Bar with Hints and Prominent Close Button -->
+      <!-- Top Bar with Hints and Close Button -->
       <div class="w-full max-w-md flex items-center justify-between pb-3">
         <span class="text-[11px] text-stone-400 font-mono flex items-center gap-1.5">
           <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i>
@@ -983,7 +1077,7 @@
   <script>
     /**
      * Source Moto Custom - Atelier Client Portal Script
-     * Classic Minimalist Edition
+     * Classic Minimalist Edition + Gemini 3.0 Torque & Spec Search Engine
      */
 
     let currentGasUrl = "https://script.google.com/macros/s/AKfycbyR9z1RDd4kVdIFdXd79Eb2IZzwZaofd6jzO69vbakI9DQ_XLgdt94-j_P_0rki34wI3w/exec";
@@ -1074,15 +1168,17 @@
     let currentCustomerData = null;
     let selectedVehicleIndex = 0;
 
-    // GEMINI 3.0 OEM MANUAL GUIDELINES AI INTEGRATION
+    // GEMINI 3.0 OEM MANUAL GUIDELINES & TORQUE CACHE
     const oemAiGuideCache = {};
+    const torqueQueryCache = {};
     let isAiGuideLoading = false;
+    let activeAiSubTab = 'milestone'; // 'milestone' or 'torque'
 
     /**
      * Call Gemini 3.0 API with Exponential Backoff
      */
     async function callGemini3Flash(payload, maxRetries = 3) {
-      const apiKey = ""; // Canvas provides runtime key when empty
+      const apiKey = ""; // Canvas runtime injection
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
       for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -1106,6 +1202,203 @@
         }
       }
     }
+
+    /**
+     * Sub-Tab Switcher between Milestones and Torque
+     */
+    window.switchMainAiSubTab = function(tab) {
+      activeAiSubTab = tab;
+      const btnMilestone = document.getElementById('btnSubTabMilestone');
+      const btnTorque = document.getElementById('btnSubTabTorque');
+      const viewMilestone = document.getElementById('subViewMilestone');
+      const viewTorque = document.getElementById('subViewTorque');
+
+      if (tab === 'milestone') {
+        btnMilestone.className = 'py-1.5 rounded-lg font-bold transition cursor-pointer bg-amber-600 text-white shadow-md flex items-center justify-center gap-1.5';
+        btnTorque.className = 'py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white flex items-center justify-center gap-1.5';
+        viewMilestone.classList.remove('hidden');
+        viewTorque.classList.add('hidden');
+      } else {
+        btnTorque.className = 'py-1.5 rounded-lg font-bold transition cursor-pointer bg-amber-600 text-white shadow-md flex items-center justify-center gap-1.5';
+        btnMilestone.className = 'py-1.5 rounded-lg font-bold transition cursor-pointer text-stone-400 hover:text-white flex items-center justify-center gap-1.5';
+        viewTorque.classList.remove('hidden');
+        viewMilestone.classList.add('hidden');
+      }
+      lucide.createIcons();
+    };
+
+    /**
+     * Query Gemini 3.0 for Part Torque & Tightening Specs
+     */
+    async function searchPartTorqueWithGemini(bikeModel, bikeYear, queryPart) {
+      const cacheKey = `${bikeModel}_${bikeYear}_${queryPart}`.toLowerCase().trim();
+      if (torqueQueryCache[cacheKey]) {
+        return torqueQueryCache[cacheKey];
+      }
+
+      const systemPrompt = `你是一位世界級專業二輪重型機車原廠特約認證技師。
+你的任務是使用 Google Search 即時檢索該車款的官方維修服務手冊（Service Manual / Workshop Manual），查詢指定部位的【原廠標準扭力鎖緊值（Tightening Torque）】與關鍵技術數據。
+
+請提供：
+1. 原廠標準鎖緊扭力值（請同時標註 N·m 與 kgf·m，如適用可加註 lbf·ft）。
+2. 螺絲規格（例如 M12、M8、螺牙間距）或鎖付注意事項（例如：是否需使用螺絲防鬆膠、更換新密封墊圈、潤滑牙紋或交替對角鎖緊）。
+3. 原廠服務手冊規範或建議極限值。
+4. 條理分明、數據精確，嚴禁憑空捏造。`;
+
+      const userPrompt = `車款：「${bikeModel} (出廠年份: ${bikeYear})」
+欲查詢的原廠鎖點或工藝部位：「${queryPart}」
+
+請檢索該車型官方原廠維修手冊（Shop Manual / Service Manual），精準輸出該部位的鎖緊扭力規範、注意事項與施工建議。`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userPrompt }] }],
+        tools: [{ "google_search": {} }],
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        }
+      };
+
+      const result = await callGemini3Flash(payload);
+      const candidate = result.candidates?.[0];
+
+      if (!candidate || !candidate.content?.parts?.[0]?.text) {
+        throw new Error("無法取得扭力規範檢索結果");
+      }
+
+      const rawText = candidate.content.parts[0].text;
+      let sources = [];
+      const groundingMetadata = candidate.groundingMetadata;
+      if (groundingMetadata && groundingMetadata.groundingAttributions) {
+        sources = groundingMetadata.groundingAttributions
+          .map(attribution => ({
+            uri: attribution.web?.uri,
+            title: attribution.web?.title,
+          }))
+          .filter(source => source.uri && source.title);
+      }
+
+      const queryData = { text: rawText, sources: sources, query: queryPart };
+      torqueQueryCache[cacheKey] = queryData;
+      return queryData;
+    }
+
+    /**
+     * Trigger Torque Search from UI
+     */
+    async function executeTorqueSearch(partName) {
+      if (!currentCustomerData) return;
+      const v = currentCustomerData.vehicles[selectedVehicleIndex] || currentCustomerData.vehicles[0];
+      const resultBox = document.getElementById('torqueResultBox');
+      const inputEl = document.getElementById('torqueSearchInput');
+      if (inputEl) inputEl.value = partName;
+
+      // Ensure Torque sub tab is visible
+      switchMainAiSubTab('torque');
+
+      resultBox.innerHTML = `
+        <div class="py-6 flex flex-col items-center justify-center space-y-2 text-center">
+          <div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>
+          <p class="text-xs font-bold text-amber-400 font-mono">Gemini 3.0 翻閱手冊中...</p>
+          <p class="text-[10px] text-stone-400 font-mono">正在檢索「${v.bikeModel}」之 ${partName} 原廠扭力標準</p>
+        </div>
+      `;
+
+      try {
+        const data = await searchPartTorqueWithGemini(v.bikeModel, v.bikeYear, partName);
+        
+        // Convert basic markdown formatting into HTML
+        let formatted = data.text
+          .replace(/### (.*?)\n/g, '<h4 class="text-amber-400 font-bold mt-2 mb-1">$1</h4>')
+          .replace(/## (.*?)\n/g, '<h4 class="text-amber-300 font-bold mt-2.5 mb-1.5 text-sm">$1</h4>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-stone-100">$1</strong>')
+          .replace(/\* (.*?)\n/g, '<li class="text-stone-300">$1</li>')
+          .replace(/\n\n/g, '<div class="h-1.5"></div>');
+
+        // Extract any prominent torque numbers (e.g. 24 N·m, 24Nm, 100 N.m)
+        const torqueMatch = data.text.match(/(\d+(?:\.\d+)?)\s*(?:N[·\.]?m|Nm|牛頓米|kgf[·\.]?m)/i);
+        const torquePill = torqueMatch ? `
+          <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg flex items-center justify-between">
+            <span class="text-[10px] text-stone-400 font-mono">手冊推薦扭力參考：</span>
+            <span class="text-sm font-bold font-mono text-amber-400">${torqueMatch[0]}</span>
+          </div>
+        ` : '';
+
+        resultBox.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="wrench" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span class="font-bold text-stone-100 text-xs font-mono">${partName}</span>
+              </div>
+              <span class="text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">原廠數據匹配</span>
+            </div>
+
+            ${torquePill}
+
+            <div class="ai-markdown text-[11px] leading-relaxed text-stone-300 space-y-1 font-mono">
+              ${formatted}
+            </div>
+
+            <div class="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-stone-500 font-mono">
+              <span>車種：${v.bikeModel} (${v.bikeYear})</span>
+              <button 
+                type="button" 
+                onclick="copyTextToClipboard('${partName} 扭力手冊規範:\\n' + document.getElementById('torqueResultBox').innerText); showToast('已複製扭力數據', 'success');" 
+                class="hover:text-amber-300 flex items-center gap-1 cursor-pointer text-stone-400"
+              >
+                <i data-lucide="copy" class="w-3 h-3"></i>
+                <span>複製數據</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        // Update Grounding Sources
+        const sourcesBox = document.getElementById('aiGroundingSourcesBox');
+        const sourcesList = document.getElementById('aiGroundingSourcesList');
+        if (sourcesBox && sourcesList && data.sources && data.sources.length > 0) {
+          sourcesBox.classList.remove('hidden');
+          sourcesList.innerHTML = data.sources.slice(0, 3).map(s => `
+            <a 
+              href="${s.uri}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="inline-flex items-center gap-1 text-[10px] text-amber-400/90 hover:text-amber-300 underline underline-offset-2 truncate max-w-[240px]"
+            >
+              <span>🔗 ${s.title || '官方原廠維修手冊參考'}</span>
+            </a>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.warn("Torque search fallback:", err);
+        resultBox.innerHTML = `
+          <div class="p-3 rounded-lg bg-rose-950/30 border border-rose-800/40 text-rose-300 text-xs space-y-1">
+            <div class="flex items-center gap-1.5 font-bold">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+              <span>檢索暫時受限</span>
+            </div>
+            <p class="text-[11px] text-stone-300">通用二輪標準參考：M6 螺絲約 $10\\sim12\\text{ N}\\cdot\\text{m}$，M8 約 $22\\sim25\\text{ N}\\cdot\\text{m}$，洩油螺栓約 $24\\text{ N}\\cdot\\text{m}$。請以原廠標準扭力板手施工。</p>
+          </div>
+        `;
+      } finally {
+        lucide.createIcons();
+      }
+    }
+
+    window.quickSearchTorque = function(part) {
+      executeTorqueSearch(part);
+    };
+
+    window.handleCustomTorqueSearch = function() {
+      const input = document.getElementById('torqueSearchInput');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        showToast('請輸入欲查詢的部位名稱', 'error');
+        return;
+      }
+      executeTorqueSearch(val);
+    };
 
     /**
      * Query Gemini 3.0 with Google Search Grounding for OEM Vehicle Manual Specs
@@ -1553,6 +1846,17 @@
 
       renderConsumables(v);
       
+      // Reset Torque Result Display when switching vehicle
+      const torqueBox = document.getElementById('torqueResultBox');
+      if (torqueBox) {
+        torqueBox.innerHTML = `
+          <div class="text-stone-400 text-center py-4 space-y-1 font-mono">
+            <i data-lucide="wrench" class="w-6 h-6 text-stone-600 mx-auto"></i>
+            <p>已切換為 ${v.bikeModel}，點擊上方部位快速查詢扭力規格。</p>
+          </div>
+        `;
+      }
+
       // Automatically detect vehicle model & search OEM user manual with Gemini 3.0
       loadAiOemManualGuide(v.bikeModel || "Honda CT125", v.bikeYear || 2023);
 
@@ -1574,7 +1878,6 @@
       const coreHtml = data.core.map(i => `<li class="flex items-center gap-1.5 text-stone-200"><span class="text-amber-400">🔸</span><span>${i}</span></li>`).join('');
       const inspHtml = data.inspection.map(i => `<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-atelier-950 border border-white/5 text-stone-300 text-[10px]">✓ ${i}</span>`).join('');
 
-      // Enhanced with dynamic Gemini 3.0 model advice if available
       let aiNoteHtml = '';
       if (window.currentAiGuideText && currentCustomerData) {
         const v = currentCustomerData.vehicles[selectedVehicleIndex] || currentCustomerData.vehicles[0];
@@ -1867,11 +2170,9 @@
       });
     }
 
-    // Tap outside the card (on backdrop) to close lightbox
     const lightboxModalEl = document.getElementById('lightboxModal');
     if (lightboxModalEl) {
       lightboxModalEl.addEventListener('click', (e) => {
-        // If clicking directly on the backdrop container or outside the card
         if (e.target === lightboxModalEl || !e.target.closest('#lightboxCard')) {
           closeLightbox();
         }
@@ -2243,6 +2544,16 @@
       triggerSafePhoneCall('0976542764');
       showToast('正在喚起通話功能...', 'info');
     });
+
+    // Keyboard enter listener for torque search input
+    const torqueInputEl = document.getElementById('torqueSearchInput');
+    if (torqueInputEl) {
+      torqueInputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          handleCustomTorqueSearch();
+        }
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
